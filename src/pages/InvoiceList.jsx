@@ -6,11 +6,14 @@ import { BsEyeFill } from "react-icons/bs";
 import InvoiceModal from "../components/InvoiceModal";
 import { useNavigate } from "react-router-dom";
 import { useInvoiceListData } from "../redux/hooks";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteInvoice } from "../redux/invoicesSlice";
 
 const InvoiceList = () => {
-  const { invoiceList, getOneInvoice } = useInvoiceListData();
+  
+
+  const{getOneInvoice,invoiceList}=useInvoiceListData();
+
   const isListEmpty = invoiceList.length === 0;
   const [copyId, setCopyId] = useState("");
   const navigate = useNavigate();
@@ -26,7 +29,6 @@ const InvoiceList = () => {
   return (
     <Row>
       <Col className="mx-auto" xs={12} md={8} lg={9}>
-        <h3 className="fw-bold pb-2 pb-md-4 text-center">Swipe Assignment</h3>
         <Card className="d-flex p-3 p-md-4 my-3 my-md-4 ">
           {isListEmpty ? (
             <div className="d-flex flex-column align-items-center">
@@ -43,7 +45,7 @@ const InvoiceList = () => {
                   <Button variant="primary mb-2 mb-md-4">Create Invoice</Button>
                 </Link>
 
-                <div className="d-flex gap-2">
+                <div className="d-flex align-item-center gap-2">
                   <Button variant="dark mb-2 mb-md-4" onClick={handleCopyClick}>
                     Copy Invoice
                   </Button>
@@ -55,12 +57,13 @@ const InvoiceList = () => {
                     placeholder="Enter Invoice ID to copy"
                     className="bg-white border"
                     style={{
-                      height: "50px",
+                      height: "40px",
+                      paddingLeft: '10px',
                     }}
                   />
                 </div>
               </div>
-              <Table responsive>
+              <Table responsive className="data-table">
                 <thead>
                   <tr>
                     <th>Invoice No.</th>
@@ -110,35 +113,34 @@ const InvoiceRow = ({ invoice, navigate }) => {
   };
 
   return (
-    <tr>
-      <td>{invoice.invoiceNumber}</td>
-      <td className="fw-normal">{invoice.billTo}</td>
-      <td className="fw-normal">{invoice.dateOfIssue}</td>
-      <td className="fw-normal">
-        {invoice.currency}
-        {invoice.total}
-      </td>
-      <td style={{ width: "5%" }}>
-        <Button variant="outline-primary" onClick={handleEditClick}>
-          <div className="d-flex align-items-center justify-content-center gap-2">
-            <BiSolidPencil />
-          </div>
-        </Button>
-      </td>
-      <td style={{ width: "5%" }}>
-        <Button variant="danger" onClick={() => handleDeleteClick(invoice.id)}>
-          <div className="d-flex align-items-center justify-content-center gap-2">
-            <BiTrash />
-          </div>
-        </Button>
-      </td>
-      <td style={{ width: "5%" }}>
-        <Button variant="secondary" onClick={openModal}>
-          <div className="d-flex align-items-center justify-content-center gap-2">
-            <BsEyeFill />
-          </div>
-        </Button>
-      </td>
+    <>
+
+      <tr>
+        <td>{invoice.invoiceNumber}</td>
+        <td className="fw-normal">{invoice.billTo}</td>
+        <td className="fw-normal">{invoice.dateOfIssue}</td>
+        <td className="fw-normal">
+          {invoice.currency}
+          {invoice.total}
+        </td>
+        <td>
+          <Button variant="outline-primary" onClick={handleEditClick} className="mx-1">
+            <div className="d-flex align-items-center justify-content-center gap-2">
+              <BiSolidPencil />
+            </div>
+          </Button>
+          <Button variant="danger" onClick={() => handleDeleteClick(invoice.id)} className="mx-1">
+            <div className="d-flex align-items-center justify-content-center gap-2">
+              <BiTrash />
+            </div>
+          </Button>
+          <Button variant="secondary" onClick={openModal} className="mx-1">
+            <div className="d-flex align-items-center justify-content-center gap-2">
+              <BsEyeFill />
+            </div>
+          </Button>
+        </td>
+      </tr>
       <InvoiceModal
         showModal={isOpen}
         closeModal={closeModal}
@@ -170,7 +172,7 @@ const InvoiceRow = ({ invoice, navigate }) => {
         discountAmount={invoice.discountAmount}
         total={invoice.total}
       />
-    </tr>
+    </>
   );
 };
 

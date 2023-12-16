@@ -69,6 +69,18 @@ const ItemRow = (props) => {
             id: props.item.itemId,
           }}
         />
+        <EditableField
+          onItemizedItemEdit={(evt) =>
+            props.onItemizedItemEdit(evt, props.item.itemId)
+          }
+          cellData={{
+            type: "text",
+            name: "itemGroup",
+            placeholder: "Item Group",
+            value: props.item.itemGroup,
+            id: props.item.itemId,
+          }}
+        />
       </td>
       <td style={{ minWidth: "70px" }}>
         <EditableField

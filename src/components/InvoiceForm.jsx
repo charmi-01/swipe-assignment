@@ -10,10 +10,12 @@ import InvoiceModal from "./InvoiceModal";
 import { BiArrowBack } from "react-icons/bi";
 import InputGroup from "react-bootstrap/InputGroup";
 import { useDispatch } from "react-redux";
-import { addInvoice, updateInvoice } from "../redux/invoicesSlice";
+import { addInvoice, deleteInvoice, updateInvoice } from "../redux/invoicesSlice";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import generateRandomId from "../utils/generateRandomId";
 import { useInvoiceListData } from "../redux/hooks";
+import { addProduct } from "../redux/productsSlice";
+import validateInvoiceForm from "../utils/validateInvoiceForm";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
@@ -30,12 +32,12 @@ const InvoiceForm = () => {
     isEdit
       ? getOneInvoice(params.id)
       : isCopy && params.id
-      ? {
+        ? {
           ...getOneInvoice(params.id),
           id: generateRandomId(),
           invoiceNumber: listSize + 1,
         }
-      : {
+        : {
           id: generateRandomId(),
           currentDate: new Date().toLocaleDateString(),
           invoiceNumber: listSize + 1,
@@ -61,6 +63,7 @@ const InvoiceForm = () => {
               itemDescription: "",
               itemPrice: "1.00",
               itemQuantity: 1,
+              itemGroup: '',
             },
           ],
         }
@@ -86,6 +89,7 @@ const InvoiceForm = () => {
       itemDescription: "",
       itemPrice: "1.00",
       itemQuantity: 1,
+      itemGroup: '',
     };
     setFormData({
       ...formData,
@@ -157,16 +161,21 @@ const InvoiceForm = () => {
   };
 
   const handleAddInvoice = () => {
-    if (isEdit) {
-      dispatch(updateInvoice({ id: params.id, updatedInvoice: formData }));
-      alert("Invoice updated successfuly 🥳");
-    } else if (isCopy) {
-      dispatch(addInvoice({ id: generateRandomId(), ...formData }));
-      alert("Invoice added successfuly 🥳");
-    } else {
+    const isFormDataValid = validateInvoiceForm(formData);
+    if (isFormDataValid) {
       dispatch(addInvoice(formData));
+      dispatch(addProduct(formData.items));
       alert("Invoice added successfuly 🥳");
+      navigate("/");
+    } else {
+      alert("Fill all the  fields ,select date and add  atleast 1 item !!!");
     }
+  };
+
+  const handleUpdateInvoice = () => {
+    dispatch(updateInvoice({ "id": params.id, "updatedInvoice": formData }))
+    dispatch(addProduct(formData.items));
+    alert("Invoice updated successfuly 🥳");
     navigate("/");
   };
 
@@ -365,7 +374,7 @@ const InvoiceForm = () => {
           <div className="sticky-top pt-md-3 pt-xl-4">
             <Button
               variant="dark"
-              onClick={handleAddInvoice}
+              onClick={isEdit?  handleUpdateInvoice : handleAddInvoice  }
               className="d-block w-100 mb-2"
             >
               {isEdit ? "Update Invoice" : "Add Invoice"}

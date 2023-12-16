@@ -51,22 +51,63 @@ hr {
   opacity: 0.1;
 }
 
-.table th {
-  border-top: 1px solid #0000001a;
-  border-bottom: 1px solid #0000001a;
-  border-bottom-color: #0000001a !important;
+.data-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
 }
-.table td {
+
+.data-table th,
+.data-table td {
+  padding: 8px; /* Adjust the padding as needed */
+  border: 1px solid #ddd; /* Add borders as needed */
+}
+
+.data-table th {
+  background-color: #f2f2f2; /* Add background color for header if needed */
   text-align: left;
 }
-.table tr th:first-child,
-.table tr td:first-child {
-  padding-left: 0;
+
+
+.data-table td {
+  text-align: left;
 }
-.table tr th:last-child,
-.table tr td:last-child {
-  padding-right: 0;
+
+/* Set specific widths for each column */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+  width: 20px; /* Adjust the width as needed */
 }
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+  width: 60px; /* Adjust the width as needed */
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+  width: 60px; /* Adjust the width as needed */
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+  width: 60px; /* Adjust the width as needed */
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+  width: 100px; /* Adjust the width as needed */
+}
+
+
+.edit-row-entry {
+  width: 100%;
+}
+
+.edit-row-entry input{
+  width: 90%;
+}
+
 
 .form-control {
   background: #f5f7f9;
@@ -92,3 +133,4 @@ hr {
   -ms-user-select: none;
   user-select: none;
 }
+

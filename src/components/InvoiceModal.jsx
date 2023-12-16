@@ -27,8 +27,32 @@ const GenerateInvoice = () => {
 };
 
 const InvoiceModal = (props) => {
+
+  const groupItemsByGroup = (items) => {
+    const groupedItems = {};
+
+    // Group items by their itemGroup
+    items.forEach((item) => {
+      const groupKey = item.itemGroup || 'Other';
+      if (!groupedItems[groupKey]) {
+        groupedItems[groupKey] = [];
+      }
+      groupedItems[groupKey].push(item);
+    });
+
+    // Convert the grouped items into an array of groups
+    const groups = Object.keys(groupedItems).map((groupName) => ({
+      groupName,
+      items: groupedItems[groupName],
+    }));
+
+    return groups;
+  };
+
+  const groupedItems = groupItemsByGroup(props.items);
+
   return (
-    <div>
+    <>
       <Modal
         show={props.showModal}
         onHide={props.closeModal}
@@ -75,34 +99,39 @@ const InvoiceModal = (props) => {
                 <div>{props.info.dateOfIssue || ""}</div>
               </Col>
             </Row>
-            <Table className="mb-0">
-              <thead>
-                <tr>
-                  <th>QTY</th>
-                  <th>DESCRIPTION</th>
-                  <th className="text-end">PRICE</th>
-                  <th className="text-end">AMOUNT</th>
-                </tr>
-              </thead>
-              <tbody>
-                {props.items.map((item, i) => {
-                  return (
-                    <tr id={i} key={i}>
-                      <td style={{ width: "70px" }}>{item.itemQuantity}</td>
-                      <td>
-                        {item.itemName} - {item.itemDescription}
-                      </td>
-                      <td className="text-end" style={{ width: "100px" }}>
-                        {props.currency} {item.itemPrice}
-                      </td>
-                      <td className="text-end" style={{ width: "100px" }}>
-                        {props.currency} {item.itemPrice * item.itemQuantity}
-                      </td>
+            {groupedItems.map((group, groupIndex) => (
+              <React.Fragment key={groupIndex}>
+                <div className="text-center bg-primary text-white fw-bold mb-2">
+                  {group.groupName}
+                </div>
+                <Table className="mb-3">
+                  <thead>
+                    <tr>
+                      <th>QTY</th>
+                      <th>DESCRIPTION</th>
+                      <th className="text-end">PRICE</th>
+                      <th className="text-end">AMOUNT</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
+                  </thead>
+                  <tbody>
+                    {group.items.map((item, itemIndex) => (
+                      <tr key={itemIndex}>
+                        <td style={{ width: "70px" }}>{item.itemQuantity}</td>
+                        <td>
+                          {item.itemName} - {item.itemDescription}
+                        </td>
+                        <td className="text-end" style={{ width: "100px" }}>
+                          {props.currency} {item.itemPrice}
+                        </td>
+                        <td className="text-end" style={{ width: "100px" }}>
+                          {props.currency} {item.itemPrice * item.itemQuantity}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </React.Fragment>
+            ))}
             <Table>
               <tbody>
                 <tr>
@@ -179,8 +208,8 @@ const InvoiceModal = (props) => {
           </Row>
         </div>
       </Modal>
-      <hr className="mt-4 mb-3" />
-    </div>
+      {/* <hr className="mt-4 mb-3" /> */}
+    </>
   );
 };
 
